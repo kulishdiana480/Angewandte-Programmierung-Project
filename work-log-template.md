@@ -207,8 +207,48 @@ Für die Tests habe ich das Muster übernommen, zuerst eine Ressource zu erstell
 
 #### 1. ✅ What did I accomplish?
 
+Am fünften Tag habe ich mich intensiv mit Pydantic-Validierung beschäftigt und die bestehenden API-Modelle deutlich robuster gemacht. Das Hauptziel war es, die API so zu gestalten, dass ungültige Daten bereits an der Eingabe abgefangen werden — bevor sie die Datenbank erreichen.
+Theorie — Warum Validierung wichtig ist:
+Ich habe verstanden, dass Typisierung allein nicht ausreicht. Ein Feld title: str akzeptiert zwar nur Strings, aber auch leere Strings, reine Leerzeichen oder extrem lange Texte. Echte Validierung bedeutet, Regeln für den Inhalt der Daten festzulegen.
+Field(...) Constraints:
+Ich habe Field(...) verwendet um folgende Einschränkungen zu definieren:
 
+title: mindestens 3, maximal 100 Zeichen
+content: mindestens 1, maximal 10.000 Zeichen
+category: mit Beschreibung und erlaubten Werten
+tags: maximal 10 Einträge, Standard leere Liste via default_factory=list
 
+ConfigDict — Modellweite Einstellungen:
+Ich habe ConfigDict mit zwei wichtigen Optionen verwendet:
+
+str_strip_whitespace=True — entfernt automatisch führende und abschließende Leerzeichen aus allen String-Feldern
+extra="forbid" — lehnt Anfragen mit unbekannten Feldern ab (z.B. Tippfehler wie tagz statt tags)
+
+@field_validator — Eigene Validierungslogik:
+Ich habe drei Field-Validators geschrieben:
+
+title_not_whitespace — stellt sicher dass der Titel nach dem Trimmen noch mindestens 3 Zeichen hat
+category_must_be_known — prüft ob die Kategorie in der erlaubten Liste ist (work, personal, school, ideas, general) und normalisiert sie zu Kleinbuchstaben
+clean_tags — bereinigt Tags: Leerzeichen entfernen, Kleinbuchstaben, Duplikate entfernen, leere Tags ablehnen
+
+@model_validator — Feldübergreifende Regel:
+Ich habe einen Model-Validator implementiert der prüft ob eine work-Notiz auch den Tag work enthält. Diese Regel braucht Zugriff auf zwei Felder gleichzeitig (category und tags), weshalb ein @field_validator hier nicht ausreicht — ein @model_validator(mode="after") war die richtige Wahl.
+NoteUpdate angepasst:
+Die gleichen Constraints wurden auf NoteUpdate übertragen, wobei alle Felder Optional bleiben — ein leerer PATCH-Body {} ist weiterhin gültig.
+Tag Modell gehärtet:
+Das SQLModel Tag wurde mit min_length=2, max_length=30 und einem @field_validator ergänzt, der den Tag-Namen automatisch normalisiert.
+Tests in test_validation.py:
+Ich habe 12 Validierungstests geschrieben, alle erfolgreich bestanden:
+
+Ablehnung von zu kurzem oder leerem Titel
+Ablehnung unbekannter Kategorien
+Normalisierung von Kategorien und Tags
+Ablehnung von Extra-Feldern
+Überprüfung der Work-Tag-Regel
+PATCH mit leerem Body funktioniert
+PATCH mit ungültigem Titel schlägt fehl
+
+Verwendete Tools: VS Code, uv, FastAPI, Pydantic v2, pytest, requests
 
 
 
@@ -216,8 +256,10 @@ Für die Tests habe ich das Muster übernommen, zuerst eine Ressource zu erstell
 
 #### 2. 🚧 What challenges did I face?
 
-
-
+Der schwierigste Moment war ein Fehler beim Starten des Servers:
+TypeError: Field() got an unexpected keyword argument 'examples'
+Das Argument examples wird in dieser Version von Pydantic nicht unterstützt. Da ich den Fehler zunächst nicht verstanden habe, musste ich die Fehlermeldung genau lesen um zu verstehen welches Argument das Problem verursacht.
+Außerdem war der Unterschied zwischen @field_validator und @model_validator anfangs nicht sofort klar. Ich musste verstehen, wann man welchen verwendet — ein Field-Validator sieht immer nur ein einzelnes Feld, während ein Model-Validator Zugriff auf das gesamte Modell hat.
 
 
 
@@ -225,8 +267,9 @@ Für die Tests habe ich das Muster übernommen, zuerst eine Ressource zu erstell
 
 #### 3. 💡 How did I overcome them?
 
-
-
+Den examples-Fehler habe ich behoben, indem ich das Argument einfach aus allen Field(...) Definitionen entfernt habe. Die Fehlermeldung hat dabei geholfen, da sie genau die Zeile und das problematische Argument angegeben hat.
+Den Unterschied zwischen den Validator-Typen habe ich durch das Konspekt-Beispiel verstanden: die Work-Tag-Regel braucht sowohl category als auch tags — das ist nur mit @model_validator möglich. Diese praktische Anwendung hat das Konzept sofort klar gemacht.
+Das häufige Ausführen von uv run pytest test_validation.py -v nach jeder Änderung hat mir geholfen, Fehler schnell zu erkennen und zu beheben.
 
 
 
@@ -235,7 +278,6 @@ Für die Tests habe ich das Muster übernommen, zuerst eine Ressource zu erstell
 ### Day 6
 
 #### 1. ✅ What did I accomplish?
-
 
 
 
