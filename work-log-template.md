@@ -154,8 +154,32 @@ Insgesamt waren häufiges Testen in /docs und sorgfältiges Lesen der Fehlermeld
 
 #### 1. ✅ What did I accomplish?
 
+Am vierten Tag habe ich das Thema POST-Anfragen und Pydantic-Validierung vertieft und erstmals automatisierte Tests mit pytest geschrieben.
+Theorie — POST vs GET:
+Ich habe den Unterschied zwischen GET und POST vollständig verstanden. GET liest nur Daten und verändert nichts, während POST neue Ressourcen erstellt und die Daten im Request-Body überträgt. Außerdem habe ich gelernt, warum der Statuscode 201 Created bei erfolgreicher Erstellung korrekter ist als der allgemeine Code 200 OK.
+Course API (my-first-api):
+Im Unterricht haben wir gemeinsam ein separates Course API gebaut, um das POST-Muster mit Dateipersistenz zu üben. Ich habe die Funktionen load_courses() und save_courses() implementiert, die Daten in einer courses.json Datei speichern. Außerdem habe ich eine Duplikatsprüfung eingebaut — versucht man einen Kurs mit demselben Code erneut zu erstellen, gibt die API den Statuscode 409 Conflict zurück.
+Folgende Endpunkte wurden implementiert:
 
+POST /courses — erstellt einen neuen Kurs mit automatisch generierter ID
+GET /courses — listet alle Kurse mit optionalen Filtern (semester, min_ects)
+GET /courses/{course_id} — gibt einen bestimmten Kurs anhand der ID zurück
 
+Tests mit pytest:
+Das Hauptthema des Tages war das Schreiben automatisierter Tests. Ich habe die Bibliotheken pytest und requests installiert und eine vollständige Testdatei test_notes.py erstellt. Alle Tests folgen dem Arrange-Act-Assert-Muster:
+
+Arrange — Testdaten vorbereiten
+Act — API-Anfrage ausführen
+Assert — Ergebnis überprüfen
+
+Insgesamt habe ich 19 Tests geschrieben, die alle erfolgreich bestanden haben:
+
+CRUD-Tests (erstellen, lesen, aktualisieren, löschen)
+Filtertests (nach Kategorie, Suchbegriff, Tag)
+Fehlertests (404 für nicht vorhandene Ressourcen, 422 für ungültige Daten)
+Tests für Statistiken, Tags und Kategorien
+
+Verwendete Tools: VS Code, uv, FastAPI, Pydantic, pytest, requests
 
 
 
@@ -163,8 +187,8 @@ Insgesamt waren häufiges Testen in /docs und sorgfältiges Lesen der Fehlermeld
 
 #### 2. 🚧 What challenges did I face?
 
-
-
+Das größte technische Problem war, dass beim Starten des Course API der Port 8000 bereits durch den laufenden Notes-Server belegt war ([Errno 48] Address already in use). Außerdem hatte ich Schwierigkeiten mit zwei gleichnamigen main.py Dateien in verschiedenen Ordnern — der falsche Server wurde gestartet.
+Beim Schreiben der Tests war es anfangs ungewohnt, dass jeder Test zunächst eine Notiz erstellen muss, bevor er sie testen kann. Ich musste verstehen, dass Tests unabhängig voneinander sein sollen und keine festen IDs voraussetzen dürfen.
 
 
 
@@ -172,8 +196,8 @@ Insgesamt waren häufiges Testen in /docs und sorgfältiges Lesen der Fehlermeld
 
 #### 3. 💡 How did I overcome them?
 
-
-
+Das Port-Problem habe ich gelöst, indem ich den laufenden Server mit kill $(lsof -t -i:8000) beendet habe. Das Problem mit den zwei gleichnamigen Dateien habe ich dadurch gelöst, dass ich das Course API direkt in die bestehende main.py integriert habe, anstatt eine separate Datei zu verwenden — das ist übersichtlicher und vermeidet Verwechslungen.
+Für die Tests habe ich das Muster übernommen, zuerst eine Ressource zu erstellen und dann deren ID für weitere Operationen zu verwenden. So sind alle Tests vollständig unabhängig und funktionieren zuverlässig. Das Ausführen aller 19 Tests mit uv run pytest test_notes.py -v und das Sehen von "19 passed" war sehr befriedigend.
 
 
 
