@@ -279,7 +279,26 @@ Das häufige Ausführen von uv run pytest test_validation.py -v nach jeder Ände
 
 #### 1. ✅ What did I accomplish?
 
+Am sechsten Tag habe ich zwei Hauptthemen bearbeitet: Python-Dekoratoren und das Bestehen der vollständigen Test-Suite des Dozenten.
+Dekoratoren — Theorie:
+Ich habe verstanden, was Dekoratoren sind und wie sie funktionieren. Ein Dekorator ist eine Funktion, die eine andere Funktion "umwickelt" und ihr neues Verhalten hinzufügt, ohne den ursprünglichen Code zu verändern. Ich habe erkannt, dass ich Dekoratoren bereits die ganze Zeit verwendet habe — @app.get("/notes") und @field_validator("title") sind beides Dekoratoren.
+class_based_decorator.py:
+Ich habe eine neue Datei erstellt und drei verschiedene Arten von Dekoratoren implementiert:
 
+log_decorator — ein einfacher funktionsbasierter Dekorator der Funktionsaufrufe loggt
+TimerDecorator — ein klassenbasierter Dekorator der die Ausführungszeit misst
+LogDecorator — ein klassenbasierter Dekorator der Argumente und Rückgabewerte loggt
+
+Außerdem habe ich die icecream-Bibliothek verwendet (ic()), die Debugging-Output lesbarer macht als normales print().
+Ich habe auch gelernt wie man kombinierte Dekoratoren verwendet — wenn zwei Dekoratoren übereinandergestapelt werden (@TimerDecorator + @LogDecorator), werden sie von innen nach außen ausgeführt.
+Test-Suite des Dozenten:
+Ich habe die offizielle Test-Suite test_main.py heruntergeladen und alle 70 Tests zum Bestehen gebracht. Dafür musste ich zwei Anpassungen vornehmen:
+
+Den @model_validator der work-Tag-Regel entfernt, da die Tests des Dozenten work-Notizen ohne work-Tag erstellen
+Datumsvalidierung in GET /notes hinzugefügt, damit ungültige Datumsformate wie not-a-date oder 2026-13-01 den Statuscode 422 zurückgeben
+
+Endergebnis: 70 passed ✅
+Verwendete Tools: VS Code, uv, FastAPI, pytest, requests, icecream
 
 
 
@@ -287,8 +306,9 @@ Das häufige Ausführen von uv run pytest test_validation.py -v nach jeder Ände
 
 #### 2. 🚧 What challenges did I face?
 
-
-
+Das erste Problem war beim Starten der Test-Suite — alle Tests wurden als SKIPPED angezeigt, weil der Server nicht lief. Ich musste lernen, zwei Terminals gleichzeitig zu verwalten: eines für den laufenden Server und eines für die Tests.
+Das zweite Problem war mit der Datumsvalidierung. Mein erster Regex ^\d{4}-\d{2}-\d{2}$ mit $ am Ende blockierte auch gültige Daten, die zusätzlich eine Uhrzeit enthielten (z.B. 2026-05-10T08:33:00). Die Tests des Dozenten verwenden datetime.now().isoformat() welches immer Datum + Uhrzeit zurückgibt — deshalb schlugen die Tests fehl.
+Das dritte Problem war der @model_validator für work-Notizen. Diese Regel war zwar aus Validierungssicht korrekt, kollidierte aber mit den Test-Daten des Dozenten, der work-Notizen ohne work-Tag erstellt.
 
 
 
@@ -296,8 +316,10 @@ Das häufige Ausführen von uv run pytest test_validation.py -v nach jeder Ände
 
 #### 3. 💡 How did I overcome them?
 
-
-
+Das Server-Problem habe ich gelöst, indem ich gelernt habe, mehrere Terminals in VS Code gleichzeitig zu verwenden — einen für uv run fastapi dev main.py und einen anderen für uv run pytest test_main.py -v.
+Den Regex-Fehler habe ich durch genaues Lesen des Test-Codes verstanden. Ich habe gesehen dass der Test datetime.now().isoformat() verwendet, was ein vollständiges ISO-Datetime-Format zurückgibt. Die Lösung war einfach: das $ am Ende des Regex entfernen, damit sowohl 2026-05-10 als auch 2026-05-10T08:33:00 akzeptiert werden.
+Für den model_validator Konflikt habe ich entschieden, die Regel zu entfernen — die Test-Suite des Dozenten ist die Referenz, und das Bestehen aller 70 Tests hatte Priorität.
+Das schrittweise Vorgehen — Tests ausführen, Fehler lesen, eine Sache fix, wieder testen — war die effektivste Strategie um von 17 Fehlern auf 0 zu kommen.
 
 
 
