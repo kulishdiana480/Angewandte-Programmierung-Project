@@ -865,3 +865,5 @@ def get_course(course_id: int) -> Course:
         status_code=404,
         detail=f"Course with ID {course_id} not found"
     )
+
+
