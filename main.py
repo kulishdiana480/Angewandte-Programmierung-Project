@@ -230,12 +230,6 @@ class NoteCreate(BaseModel):
             cleaned.append(t)
         return cleaned
 
-    @model_validator(mode="after")
-    def work_notes_need_work_tag(self):
-        if self.category == "work" and "work" not in self.tags:
-            raise ValueError("work notes must include the 'work' tag")
-        return self
-
 
 class NoteUpdate(BaseModel):
     model_config = ConfigDict(
@@ -462,6 +456,38 @@ def list_notes(
     - created_after
     - created_before
     """
+
+
+    import re
+    date_pattern = re.compile(r"^\d{4}-\d{2}-\d{2}")
+
+    if created_after:
+        if not date_pattern.match(created_after):
+            raise HTTPException(
+                status_code=422,
+                detail="created_after must be in ISO date format YYYY-MM-DD"
+            )
+        try:
+            datetime.fromisoformat(created_after)
+        except ValueError:
+            raise HTTPException(
+                status_code=422,
+                detail="created_after is not a valid date"
+            )
+
+    if created_before:
+        if not date_pattern.match(created_before):
+            raise HTTPException(
+                status_code=422,
+                detail="created_before must be in ISO date format YYYY-MM-DD"
+            )
+        try:
+            datetime.fromisoformat(created_before)
+        except ValueError:
+            raise HTTPException(
+                status_code=422,
+                detail="created_before is not a valid date"
+            )
 
     statement = select(Note)
 
