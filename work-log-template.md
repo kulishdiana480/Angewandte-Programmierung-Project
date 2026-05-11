@@ -331,8 +331,33 @@ Das schrittweise Vorgehen — Tests ausführen, Fehler lesen, eine Sache fix, wi
 
 #### 1. ✅ What did I accomplish?
 
+Am siebten Tag habe ich zum ersten Mal ein Frontend für meine Notes API gebaut — mit Streamlit, einer Python-Bibliothek die es ermöglicht, Web-Interfaces ohne HTML oder JavaScript zu erstellen.
+Streamlit — Theorie:
+Ich habe verstanden was Streamlit ist und warum es besonders für Backend-Entwickler nützlich ist. Statt HTML, CSS und JavaScript zu lernen, kann man mit reinem Python interaktive Webanwendungen bauen. Streamlit läuft als separater Server (Port 8501/8502) und kommuniziert mit der FastAPI (Port 8000).
+Say No App (say_no.py):
+Als erste Übung habe ich eine Test-App gebaut die eine externe API (naas.isalman.dev/no) aufruft und lustige Ablehnungsgründe anzeigt. Dabei habe ich folgende Streamlit-Konzepte gelernt:
 
+st.text_input() — Texteingabefeld
+st.button() — Knopf der Aktionen auslöst
+st.write() — Text ausgeben
+st.session_state — Zustand zwischen Interaktionen speichern
+st.expander() — aufklappbarer Bereich
 
+Notes App Frontend (frontend.py):
+Das Hauptprojekt des Tages war ein vollständiges Frontend für die Notes API mit zwei Funktionen:
+Funktion 1 — Alle Notizen anzeigen:
+
+Dropdown-Liste mit allen Notiz-Titeln
+Bei Auswahl werden Titel, Kategorie, Tags, Erstellungsdatum und Inhalt angezeigt
+Daten werden live von der FastAPI geladen
+
+Funktion 2 — Neue Notiz erstellen:
+
+Formular mit st.form() für gemeinsame Eingabe aller Felder
+Felder: Title (st.text_input), Content (st.text_area), Category (st.selectbox), Tags (st.text_input)
+Nach erfolgreichem Erstellen wird die Seite automatisch neu geladen (st.rerun()) und die neue Notiz erscheint sofort in der Liste
+
+Verwendete Tools: VS Code, uv, Streamlit, FastAPI, requests
 
 
 
@@ -340,8 +365,13 @@ Das schrittweise Vorgehen — Tests ausführen, Fehler lesen, eine Sache fix, wi
 
 #### 2. 🚧 What challenges did I face?
 
+Das größte Problem war die Verwaltung von mehreren gleichzeitig laufenden Prozessen. Für die Notes App müssen drei Dinge gleichzeitig laufen:
 
+FastAPI Server auf Port 8000
+Streamlit Server auf Port 8501/8502
+Browser
 
+Ich habe mehrfach vergessen den FastAPI Server zu starten, was zu einem ConnectionError in Streamlit führte. Außerdem war es anfangs verwirrend dass say_no.py und frontend.py auf verschiedenen Ports laufen (8501 und 8502).
 
 
 
@@ -349,8 +379,9 @@ Das schrittweise Vorgehen — Tests ausführen, Fehler lesen, eine Sache fix, wi
 
 #### 3. 💡 How did I overcome them?
 
-
-
+Ich habe gelernt immer zuerst den FastAPI Server zu starten und dann erst Streamlit. Die Fehlermeldung Connection refused port 8000 war dabei sehr hilfreich — sie zeigte genau welcher Server fehlt.
+Für die Port-Verwechslung habe ich gelernt immer im Terminal nachzuschauen welcher Local URL angezeigt wird — dort steht der genaue Port auf dem Streamlit läuft.
+Das st.form() Konzept war sehr praktisch — es ermöglicht alle Eingaben zusammen mit einem einzigen Button abzuschicken, was die Benutzererfahrung deutlich verbessert.
 
 
 
