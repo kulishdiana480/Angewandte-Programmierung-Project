@@ -391,8 +391,42 @@ Das st.form() Konzept war sehr praktisch — es ermöglicht alle Eingaben zusamm
 
 #### 1. ✅ What did I accomplish?
 
+Am achten Tag habe ich mein Projekt finalisiert und für die Abgabe vorbereitet. Der Schwerpunkt lag nicht auf neuer Funktionalität, sondern auf Qualitätssicherung, Dokumentation und Projektorganisation.
+Finale Überprüfung der drei Hauptbefehle:
+Ich habe sichergestellt, dass alle drei vom Dozenten vorgegebenen Befehle fehlerfrei funktionieren:
 
+uv run fastapi dev main.py — Backend startet ohne Fehler
+uv run pytest test_main.py -v — alle 70 Tests bestehen
+uv run streamlit run frontend.py — Frontend lädt korrekt
 
+Frontend zusammengeführt:
+Die Say-No-App (say_no.py) und die Notes-App (frontend.py) wurden in eine einzige Datei frontend.py zusammengeführt, da der Dozent nur diese eine Datei prüft. Das finale Frontend enthält beide Funktionen übersichtlich in einer Datei.
+README.md erstellt:
+Ich habe eine vollständige Projektdokumentation auf Deutsch geschrieben. Das README enthält:
+
+Projektbeschreibung und Übersicht
+Schnellstart-Anleitung mit allen drei Befehlen
+Vollständige Tabelle aller API-Endpunkte
+Beschreibung aller Filterparameter
+Validierungsregeln mit Beispielen
+Datenbankstruktur (Many-to-Many)
+Entwicklungszeitlinie über alle 7 Kurstage
+Technologie-Stack
+
+Projektstruktur aufgeräumt:
+Ich habe überprüft ob alle wichtigen Dateien im Repository vorhanden und aktuell sind:
+
+main.py — vollständiges Backend
+frontend.py — Streamlit-Frontend
+test_main.py — Referenz-Testsuite
+test_notes.py — eigene Tests
+test_validation.py — Validierungstests
+work-log-template.md — Lerntagebuch
+README.md — Projektdokumentation
+
+Git — finaler Push:
+Alle Änderungen wurden mit aussagekräftigen Commit-Messages versioniert und auf GitHub gepusht.
+Verwendete Tools: VS Code, Git, GitHub, uv, FastAPI, Streamlit, pytest
 
 
 
@@ -400,37 +434,9 @@ Das st.form() Konzept war sehr praktisch — es ermöglicht alle Eingaben zusamm
 
 #### 2. 🚧 What challenges did I face?
 
-
-
-
-
-
----
-
-#### 3. 💡 How did I overcome them?
-
-
-
-
-
-
----
-
-### Day 9
-
-#### 1. ✅ What did I accomplish?
-
-
-
-
-
-
----
-
-#### 2. 🚧 What challenges did I face?
-
-
-
+Die größte Herausforderung war die Qualitätssicherung — sicherzustellen dass alle drei Befehle in der richtigen Reihenfolge und ohne Fehler funktionieren. Dabei musste ich immer daran denken, zuerst den FastAPI-Server zu starten, bevor ich Tests oder das Frontend ausführe.
+Beim Zusammenführen der zwei Streamlit-Dateien musste ich darauf achten, dass beide Teile unabhängig voneinander funktionieren und die session_state-Variablen sich nicht gegenseitig beeinflussen.
+Das Schreiben des README war zeitaufwändig — es war wichtig, alle relevanten Informationen vollständig und klar zu dokumentieren, ohne zu viel oder zu wenig zu erklären.
 
 
 
@@ -438,25 +444,11 @@ Das st.form() Konzept war sehr praktisch — es ermöglicht alle Eingaben zusamm
 
 #### 3. 💡 How did I overcome them?
 
-
-
+Für die Qualitätssicherung habe ich eine feste Reihenfolge eingehalten: zuerst Backend starten, dann Tests ausführen, dann Frontend testen. Diese Routine hat mir geholfen, keine Schritte zu überspringen.
+Das Zusammenführen der Streamlit-Dateien war einfacher als erwartet — ich habe einen st.divider() zwischen beiden Teilen eingefügt um sie visuell zu trennen, und die session_state-Schlüssel haben unterschiedliche Namen, sodass es keine Konflikte gibt.
+Für das README habe ich mich an der Struktur der API-Dokumentation orientiert die wir während des Kurses kennengelernt haben — klare Abschnitte, Tabellen für Endpunkte und Codebeispiele für Datenformate.
 
 
 
 ---
-
-
-# 🎉 Congratulations! You did it! 🎓✨
-
-
-
-
-
-
-
-
-
-
-
-
 
